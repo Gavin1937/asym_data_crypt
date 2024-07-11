@@ -19,6 +19,8 @@ pip install -r requirements.txt
 ## Encrypted file data structure
 
 ```
+  Addr |                  Operation                       |
+       |                                                  |
 0x0000 |    RSA.encrypt(RSA.key, AES.key) [128-bytes]     |
        |                                                  |
 0x0080 |    RSA.encrypt(RSA.key, AES.iv)  [128-bytes]     |
