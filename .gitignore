@@ -9,3 +9,14 @@ data*/
 
 # files
 *test*
+*.pem
+*.in
+*.out
+*.png
+*.jpg
+*.jpeg
+
+# whitelist
+!demo/file.in
+!demo/private_key.pem
+!demo/public_key.pem

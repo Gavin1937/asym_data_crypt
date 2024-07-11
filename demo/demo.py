@@ -1,20 +1,19 @@
 import asym_data_crypt
 
 
-# create key
-prv_key,pub_key = asym_data_crypt.key_gen()
+# # create key
+# prv_key,pub_key = asym_data_crypt.key_gen()
 
 # # save key to file
 # with open('private_key.pem', 'wb') as f1, open('public_key.pem', 'wb') as f2:
 #     f1.write(prv_key)
 #     f2.write(pub_key)
 
-
-# # load key
-# prv_key,pub_key = None,None
-# with open('private_key.pem', 'rb') as f1, open('public_key.pem', 'rb') as f2:
-#     prv_key = f1.read()
-#     pub_key = f2.read()
+# load key
+prv_key,pub_key = None,None
+with open('private_key.pem', 'rb') as f1, open('public_key.pem', 'rb') as f2:
+    prv_key = f1.read()
+    pub_key = f2.read()
 
 
 
@@ -25,10 +24,11 @@ prv_key,pub_key = asym_data_crypt.key_gen()
 
 
 # encrypt/decrypt file in chunks
-with open('file.in', 'rb') as fio_in, open('file.out', 'wb') as fio_out:
-    # encrypt
-    for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in):
-        fio_out.write(chunk)
+with open('file.in', 'rb') as fio_in, open('output.png', 'wb') as fio_out:
+    # # encrypt
+    # for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in):
+    #     fio_out.write(chunk)
+    
     # decrypt
     for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in):
         fio_out.write(chunk)
@@ -50,8 +50,11 @@ with open('file.in', 'rb') as fio_in, open('file.out', 'wb') as fio_out:
 
 
 # # encrypt/decrypt file by path
-# with open('file.out', 'wb') as fio_out:
+# with open('output.png', 'wb') as fio_out:
+#     # encrypt
 #     for chunk in asym_data_crypt.path_encrypt(pub_key, 'file.in'):
 #         fio_out.write(chunk)
+    
+#     # decrypt
 #     for chunk in asym_data_crypt.path_decrypt(prv_key, 'file.in'):
 #         fio_out.write(chunk)
