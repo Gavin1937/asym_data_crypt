@@ -19,10 +19,10 @@ pip install -r requirements.txt
 ## Encrypted file data structure
 
 ```
-0x0000 | RSA.encrypt(RSA.key, AES.key) [128-bytes] |
-       |                                           |
-0x0080 | RSA.encrypt(RSA.key, AES.iv)  [128-bytes] |
-       |                                           |
-0x0100 |     AES.encrypt(AES.key, AES.iv, data)    |
-       |                    ...                    |
+0x0000 |    RSA.encrypt(RSA.key, AES.key) [128-bytes]     |
+       |                                                  |
+0x0080 |    RSA.encrypt(RSA.key, AES.iv)  [128-bytes]     |
+       |                                                  |
+0x0100 | AES.encrypt(AES.key, AES.MODE_CBC, AES.iv, data) |
+       |                    ...                           |
 ```
