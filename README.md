@@ -12,6 +12,20 @@ A python3 library that, similar to TLS/SSL algorithm, uses RSA & AES to encrypt/
 pip install -r requirements.txt
 ```
 
+## Install
+
+install after cloning source code
+
+```sh
+pip install .
+```
+
+or, install from github
+
+```sh
+pip install -U git+https://github.com/Gavin1937/asym_data_crypt.git
+```
+
 ## Example
 
 [Checkout demo.py](./demo/demo.py)
