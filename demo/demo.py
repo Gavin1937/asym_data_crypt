@@ -13,7 +13,7 @@
 #########################################################
 
 
-# set path to parent in order to import WebImageAPI
+# set path to parent in order to import asym_data_crypt
 import sys
 sys.path.append('..')
 
