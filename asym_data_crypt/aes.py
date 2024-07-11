@@ -4,19 +4,15 @@ from Crypto.Cipher import AES
 from Crypto import Random
 from Crypto.Util.Padding import pad, unpad
 
+from .constants import *
+
 __all__ = [
-    'AES_IV_SIZE',
-    'AES_KEY_SIZE',
-    'DEFAULT_IV',
     'aes_iv_gen',
     'aes_key_gen',
     'aes_encrypt',
     'aes_decrypt',
 ]
 
-AES_IV_SIZE = 16
-AES_KEY_SIZE = 32
-DEFAULT_IV = b'\x00' * 16
 
 def aes_iv_gen() -> bytes:
     'AES key generation, returns a 16-bytes (128-bits) iv'
@@ -26,7 +22,7 @@ def aes_key_gen() -> bytes:
     'AES key generation, returns a 32-bytes (256-bits) key'
     return Random.get_random_bytes(AES_KEY_SIZE)
 
-def aes_encrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV) -> Generator[bytes, Any, None]:
+def aes_encrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV, chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'AES encryption, taking BytesIO and encrypts input in chunks, yield chunks out'
     
     if not isinstance(bio, IOBase):
@@ -37,7 +33,7 @@ def aes_encrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV) -> Generator[bytes,
     cipher = AES.new(key, AES.MODE_CBC, iv=iv)
     last_chunk = None
     while True:
-        chunk = bio.read(AES.block_size*1024)
+        chunk = bio.read(chunk_size)
         
         # no more chunk, pad last_chunk & encrypt
         if chunk == b'':
@@ -52,7 +48,7 @@ def aes_encrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV) -> Generator[bytes,
         
         last_chunk = chunk
 
-def aes_decrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV) -> Generator[bytes, Any, None]:
+def aes_decrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV, chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'AES decryption, taking BytesIO and decrypts input in chunks, yield chunks out'
     
     if not isinstance(bio, IOBase):
@@ -63,7 +59,7 @@ def aes_decrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV) -> Generator[bytes,
     cipher = AES.new(key, AES.MODE_CBC, iv=iv)
     last_chunk = None
     while True:
-        chunk = bio.read(AES.block_size*1024)
+        chunk = bio.read(chunk_size)
         
         # no more chunk, decrypt & unpad last_chunk
         if chunk == b'':

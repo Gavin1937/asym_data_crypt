@@ -2,13 +2,11 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 __all__ = [
-    'RSA_ENCRYPTED_SIZE',
     'rsa_key_gen',
     'rsa_encrypt',
     'rsa_decrypt',
 ]
 
-RSA_ENCRYPTED_SIZE = 128
 
 def rsa_key_gen() -> tuple:
     'Generate RSA key, return (private_key, public_key)'

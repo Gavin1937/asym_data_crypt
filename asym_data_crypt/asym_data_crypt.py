@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union, Generator, Any
 from base64 import b64encode, b64decode
 
+from .constants import *
 from .rsa import *
 from .aes import *
 
@@ -18,11 +19,12 @@ __all__ = [
     'path_decrypt',
 ]
 
+
 def key_gen() -> tuple:
     'Generate RSA key, return (private_key, public_key)'
     return rsa_key_gen()
 
-def bio_encrypt(key:bytes, bio_in:BytesIO) -> Generator[bytes, Any, None]:
+def bio_encrypt(key:bytes, bio_in:BytesIO, chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'Asymmetric data encryption, encrypt BytesIO object, yield chunks out'
     if not isinstance(key, bytes):
         raise ValueError("key MUST be bytes.")
@@ -42,10 +44,10 @@ def bio_encrypt(key:bytes, bio_in:BytesIO) -> Generator[bytes, Any, None]:
     yield encr_aes_iv
     
     # data encryption
-    for chunk in aes_encrypt(bio_in, aes_key, aes_iv):
+    for chunk in aes_encrypt(bio_in, aes_key, aes_iv, chunk_size):
         yield chunk
 
-def bio_decrypt(key:bytes, bio_in:BytesIO) -> Generator[bytes, Any, None]:
+def bio_decrypt(key:bytes, bio_in:BytesIO, chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'Asymmetric data decryption, decrypt BytesIO object, yield chunks out'
     if not isinstance(key, bytes):
         raise ValueError("key MUST be bytes.")
@@ -59,7 +61,7 @@ def bio_decrypt(key:bytes, bio_in:BytesIO) -> Generator[bytes, Any, None]:
     decr_aes_iv = rsa_decrypt(decr_aes_iv, key)
     
     # data encryption
-    for chunk in aes_decrypt(bio_in, decr_aes_key, decr_aes_iv):
+    for chunk in aes_decrypt(bio_in, decr_aes_key, decr_aes_iv, chunk_size):
         yield chunk
 
 
@@ -87,15 +89,15 @@ def base64_decrypt(key:bytes, base64_in:str) -> str:
     bytes_out = bytes_decrypt(key, bytes_in)
     return b64encode(bytes_out)
 
-def path_encrypt(key:bytes, path:Union[str,Path]) -> Generator[bytes, Any, None]:
+def path_encrypt(key:bytes, path:Union[str,Path], chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'Asymmetric data encryption, encrypt file from path, yield chunks out'
     bytes_out = b''
     with open(path, 'rb') as file:
-        for chunk in bio_encrypt(key, file):
+        for chunk in bio_encrypt(key, file, chunk_size):
             yield chunk
-def path_decrypt(key:bytes, path:Union[str,Path]) -> Generator[bytes, Any, None]:
+def path_decrypt(key:bytes, path:Union[str,Path], chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'Asymmetric data decryption, decrypt file from path, yield chunks out'
     bytes_out = b''
     with open(path, 'rb') as file:
-        for chunk in bio_decrypt(key, file):
+        for chunk in bio_decrypt(key, file, chunk_size):
             yield chunk
