@@ -1,3 +1,24 @@
+#! /bin/python3
+
+#########################################################
+#                                                       #
+#  Demo application for asym_data_crypt                 #
+#                                                       #
+#  Make sure you run this file from "demo" directory,   #
+#  so it can load the asym_data_crypt package properly  #
+#                                                       #
+#  Author: Gavin1937                                    #
+#  GitHub: https://github.com/Gavin1937/asym_data_crypt #
+#                                                       #
+#########################################################
+
+
+# set path to parent in order to import WebImageAPI
+import sys
+sys.path.append('..')
+
+
+# start here
 import asym_data_crypt
 
 
@@ -22,15 +43,16 @@ with open('private_key.pem', 'rb') as f1, open('public_key.pem', 'rb') as f2:
 # You can use public_key to encrypt and decrypt with private_key. Or, you can use
 # private_key to encrypt and decrypt with public_key.
 
+chunk_size = asym_data_crypt.DEFAULT_CHUNK_SIZE
 
 # encrypt/decrypt file in chunks
 with open('file.in', 'rb') as fio_in, open('output.png', 'wb') as fio_out:
     # # encrypt
-    # for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in):
+    # for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in, chunk_size):
     #     fio_out.write(chunk)
     
     # decrypt
-    for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in):
+    for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in, chunk_size):
         fio_out.write(chunk)
 
 
@@ -52,9 +74,9 @@ with open('file.in', 'rb') as fio_in, open('output.png', 'wb') as fio_out:
 # # encrypt/decrypt file by path
 # with open('output.png', 'wb') as fio_out:
 #     # encrypt
-#     for chunk in asym_data_crypt.path_encrypt(pub_key, 'file.in'):
+#     for chunk in asym_data_crypt.path_encrypt(pub_key, 'file.in', chunk_size):
 #         fio_out.write(chunk)
-    
+#     
 #     # decrypt
-#     for chunk in asym_data_crypt.path_decrypt(prv_key, 'file.in'):
+#     for chunk in asym_data_crypt.path_decrypt(prv_key, 'file.in', chunk_size):
 #         fio_out.write(chunk)
