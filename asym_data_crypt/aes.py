@@ -31,19 +31,19 @@ def aes_encrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV, chunk_size:int=DEFA
         raise ValueError("key MUST be bytes.")
     
     cipher = AES.new(key, AES.MODE_CBC, iv=iv)
-    last_chunk = None
+    last_chunk = b''
     while True:
         chunk = bio.read(chunk_size)
         
-        # no more chunk, pad last_chunk & encrypt
+        # no more chunk or 1st chunk is empty, pad last_chunk & encrypt
         if chunk == b'':
             encrypted = pad(last_chunk, AES.block_size, style='pkcs7')
             encrypted = cipher.encrypt(encrypted)
             yield encrypted
             break
         
-        # encrypt last_chunk
-        if last_chunk:
+        # encrypt last_chunk if it exits
+        if last_chunk != b'':
             yield cipher.encrypt(last_chunk)
         
         last_chunk = chunk
@@ -61,14 +61,14 @@ def aes_decrypt(bio:BytesIO, key:bytes, iv:bytes=DEFAULT_IV, chunk_size:int=DEFA
     while True:
         chunk = bio.read(chunk_size)
         
-        # no more chunk, decrypt & unpad last_chunk
+        # more chunk or 1st chunk is empty, decrypt & unpad last_chunk
         if chunk == b'':
             decrypted = cipher.decrypt(last_chunk)
             decrypted = unpad(decrypted, AES.block_size, style='pkcs7')
             yield decrypted
             break
         
-        # encrypt last_chunk
+        # decrypt last_chunk if it exits
         if last_chunk:
             yield cipher.decrypt(last_chunk)
         
