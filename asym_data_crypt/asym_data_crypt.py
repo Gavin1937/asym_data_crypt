@@ -82,12 +82,12 @@ def base64_encrypt(key:bytes, base64_in:str) -> str:
     'Asymmetric data encryption, encrypt base64 data, output base64 str'
     bytes_in = b64decode(base64_in)
     bytes_out = bytes_encrypt(key, bytes_in)
-    return b64encode(bytes_out)
+    return b64encode(bytes_out).decode('utf-8')
 def base64_decrypt(key:bytes, base64_in:str) -> str:
     'Asymmetric data decryption, decrypt base64 data, output base64 str'
     bytes_in = b64decode(base64_in)
     bytes_out = bytes_decrypt(key, bytes_in)
-    return b64encode(bytes_out)
+    return b64encode(bytes_out).decode('utf-8')
 
 def path_encrypt(key:bytes, path:Union[str,Path], chunk_size:int=DEFAULT_CHUNK_SIZE) -> Generator[bytes, Any, None]:
     'Asymmetric data encryption, encrypt file from path, yield chunks out'
