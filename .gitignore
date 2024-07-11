@@ -10,6 +10,7 @@ data*/
 # files
 *test*
 *.pem
+*.enc
 *.in
 *.out
 *.png
@@ -17,6 +18,4 @@ data*/
 *.jpeg
 
 # whitelist
-!demo/file.in
-!demo/private_key.pem
-!demo/public_key.pem
+!demo/data/

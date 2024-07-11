@@ -1,0 +1,7 @@
+# blacklist
+output/
+
+# whitelist following files
+!data/archive.zip
+!data/image.png
+!data/text.txt
