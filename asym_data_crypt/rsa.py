@@ -15,14 +15,14 @@ def rsa_key_gen() -> tuple:
     public_key = key_obj.public_key().export_key('PEM')
     return (private_key, public_key)
 
-def rsa_encrypt(data:bytes, key:bytes) -> bytes:
+def rsa_encrypt(data:bytes, key:bytes, passphrase:bytes=None) -> bytes:
     'RSA encryption, output bytes'
-    key_obj = RSA.import_key(key)
+    key_obj = RSA.import_key(key, passphrase)
     cipher = PKCS1_OAEP.new(key_obj)
     return cipher.encrypt(data)
 
-def rsa_decrypt(data:bytes, key:bytes) -> bytes:
+def rsa_decrypt(data:bytes, key:bytes, passphrase:bytes=None) -> bytes:
     'RSA decryption, output bytes'
-    key_obj = RSA.import_key(key)
+    key_obj = RSA.import_key(key, passphrase)
     cipher = PKCS1_OAEP.new(key_obj)
     return cipher.decrypt(data)

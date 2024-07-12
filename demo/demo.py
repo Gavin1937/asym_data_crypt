@@ -21,6 +21,7 @@ sys.path.append('..')
 # start here
 import asym_data_crypt
 from pathlib import Path
+from base64 import b64encode
 
 
 # folder structure setup
