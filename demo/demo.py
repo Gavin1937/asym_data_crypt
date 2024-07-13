@@ -33,7 +33,8 @@ if not output.exists():
 
 
 # create key
-prv_key,pub_key = asym_data_crypt.key_gen()
+passphrase = 'passphrase'
+prv_key,pub_key = asym_data_crypt.key_gen(passphrase)
 
 # save key to file
 with open(output/'private_key.pem', 'wb') as f1, open(output/'public_key.pem', 'wb') as f2:
@@ -68,11 +69,11 @@ for file in data.iterdir():
         
         # encrypt file in chunks
         with open(data/original_name, 'rb') as fio_in, open(output/encrypted_name, 'wb') as fio_out:
-            for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in, chunk_size):
+            for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in, chunk_size, passphrase):
                 fio_out.write(chunk)
         # decrypt file in chunks
         with open(output/encrypted_name, 'rb') as fio_in, open(output/original_name, 'wb') as fio_out:
-            for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in, chunk_size):
+            for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in, chunk_size, passphrase):
                 fio_out.write(chunk)
         
         
@@ -80,9 +81,9 @@ for file in data.iterdir():
         # with open(data/original_name, 'rb') as f:
         #     data_in = f.read()
         # with open(output/encrypted_name, 'wb') as encrypted_file, open(output/original_name, 'wb') as decrypted_file:
-        #     encrypted_data = asym_data_crypt.bytes_encrypt(pub_key, data_in)
+        #     encrypted_data = asym_data_crypt.bytes_encrypt(pub_key, data_in, passphrase)
         #     encrypted_file.write(encrypted_data)
-        #     decrypted_data = asym_data_crypt.bytes_decrypt(prv_key, encrypted_data)
+        #     decrypted_data = asym_data_crypt.bytes_decrypt(prv_key, encrypted_data, passphrase)
         #     decrypted_file.write(decrypted_data)
         
         
@@ -90,19 +91,19 @@ for file in data.iterdir():
         # with open(data/original_name, 'rb') as file:
         #     b64_in = b64encode(file.read()).decode('utf-8')
         # with open(output/encrypted_name, 'w') as encrypted_file, open(output/original_name, 'w') as decrypted_file:
-        #     encrypted_data = asym_data_crypt.base64_encrypt(pub_key, b64_in)
+        #     encrypted_data = asym_data_crypt.base64_encrypt(pub_key, b64_in, passphrase)
         #     encrypted_file.write(encrypted_data)
-        #     decrypted_data = asym_data_crypt.base64_decrypt(prv_key, encrypted_data)
+        #     decrypted_data = asym_data_crypt.base64_decrypt(prv_key, encrypted_data, passphrase)
         #     decrypted_file.write(decrypted_data)
         
         
         # # encrypt file by path
         # with open(output/encrypted_name, 'wb') as fio_out:
-        #     for chunk in asym_data_crypt.path_encrypt(pub_key, data/original_name, chunk_size):
+        #     for chunk in asym_data_crypt.path_encrypt(pub_key, data/original_name, chunk_size, passphrase):
         #         fio_out.write(chunk)
         # # decrypt file by path
         # with open(output/original_name, 'wb') as fio_out:
-        #     for chunk in asym_data_crypt.path_decrypt(prv_key, output/encrypted_name, chunk_size):
+        #     for chunk in asym_data_crypt.path_decrypt(prv_key, output/encrypted_name, chunk_size, passphrase):
         #         fio_out.write(chunk)
     
     except Exception as err:

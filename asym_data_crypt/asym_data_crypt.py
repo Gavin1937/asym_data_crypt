@@ -20,13 +20,13 @@ __all__ = [
 ]
 
 
-def key_gen() -> tuple:
+def key_gen(passphrase:str=None) -> tuple:
     'Generate RSA key, return (private_key, public_key)'
-    return rsa_key_gen()
+    return rsa_key_gen(passphrase)
 
 def bio_encrypt(
     key:bytes, bio_in:BytesIO,
-    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:bytes=None
+    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:str=None
 ) -> Generator[bytes, Any, None]:
     'Asymmetric data encryption, encrypt BytesIO object, yield chunks out'
     if not isinstance(key, bytes):
@@ -52,7 +52,7 @@ def bio_encrypt(
 
 def bio_decrypt(
     key:bytes, bio_in:BytesIO,
-    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:bytes=None
+    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:str=None
 ) -> Generator[bytes, Any, None]:
     'Asymmetric data decryption, decrypt BytesIO object, yield chunks out'
     if not isinstance(key, bytes):
@@ -71,25 +71,25 @@ def bio_decrypt(
         yield chunk
 
 
-def bytes_encrypt(key:bytes, bytes_in:bytes, key_passphrase:bytes=None) -> bytes:
+def bytes_encrypt(key:bytes, bytes_in:bytes, key_passphrase:str=None) -> bytes:
     'Asymmetric data encryption, encrypt bytes object, output bytes'
     bytes_out = b''
-    for chunk in bio_encrypt(key, BytesIO(bytes_in), key_passphrase):
+    for chunk in bio_encrypt(key, BytesIO(bytes_in), key_passphrase=key_passphrase):
         bytes_out += chunk
     return bytes_out
-def bytes_decrypt(key:bytes, bytes_in:bytes, key_passphrase:bytes=None) -> bytes:
+def bytes_decrypt(key:bytes, bytes_in:bytes, key_passphrase:str=None) -> bytes:
     'Asymmetric data decryption, decrypt bytes object, output bytes'
     bytes_out = b''
-    for chunk in bio_decrypt(key, BytesIO(bytes_in), key_passphrase):
+    for chunk in bio_decrypt(key, BytesIO(bytes_in), key_passphrase=key_passphrase):
         bytes_out += chunk
     return bytes_out
 
-def base64_encrypt(key:bytes, base64_in:str, key_passphrase:bytes=None) -> str:
+def base64_encrypt(key:bytes, base64_in:str, key_passphrase:str=None) -> str:
     'Asymmetric data encryption, encrypt base64 data, output base64 str'
     bytes_in = b64decode(base64_in)
     bytes_out = bytes_encrypt(key, bytes_in, key_passphrase)
     return b64encode(bytes_out).decode('utf-8')
-def base64_decrypt(key:bytes, base64_in:str, key_passphrase:bytes=None) -> str:
+def base64_decrypt(key:bytes, base64_in:str, key_passphrase:str=None) -> str:
     'Asymmetric data decryption, decrypt base64 data, output base64 str'
     bytes_in = b64decode(base64_in)
     bytes_out = bytes_decrypt(key, bytes_in, key_passphrase)
@@ -97,7 +97,7 @@ def base64_decrypt(key:bytes, base64_in:str, key_passphrase:bytes=None) -> str:
 
 def path_encrypt(
     key:bytes, path:Union[str,Path],
-    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:bytes=None
+    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:str=None
 ) -> Generator[bytes, Any, None]:
     'Asymmetric data encryption, encrypt file from path, yield chunks out'
     bytes_out = b''
@@ -106,7 +106,7 @@ def path_encrypt(
             yield chunk
 def path_decrypt(
     key:bytes, path:Union[str,Path],
-    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:bytes=None
+    chunk_size:int=DEFAULT_CHUNK_SIZE, key_passphrase:str=None
 ) -> Generator[bytes, Any, None]:
     'Asymmetric data decryption, decrypt file from path, yield chunks out'
     bytes_out = b''
