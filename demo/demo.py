@@ -57,49 +57,53 @@ chunk_size = asym_data_crypt.DEFAULT_CHUNK_SIZE
 
 
 for file in data.iterdir():
-    # init iteration
-    if file.is_dir():
-        continue
-    original_name = file.name
-    encrypted_name = original_name + '.enc'
-    print(original_name)
+    try:
+        # init iteration
+        if file.is_dir():
+            continue
+        original_name = file.name
+        encrypted_name = original_name + '.enc'
+        print(original_name)
+        
+        
+        # encrypt file in chunks
+        with open(data/original_name, 'rb') as fio_in, open(output/encrypted_name, 'wb') as fio_out:
+            for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in, chunk_size):
+                fio_out.write(chunk)
+        # decrypt file in chunks
+        with open(output/encrypted_name, 'rb') as fio_in, open(output/original_name, 'wb') as fio_out:
+            for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in, chunk_size):
+                fio_out.write(chunk)
+        
+        
+        # # encrypt/decrypt bytes
+        # with open(data/original_name, 'rb') as f:
+        #     data_in = f.read()
+        # with open(output/encrypted_name, 'wb') as encrypted_file, open(output/original_name, 'wb') as decrypted_file:
+        #     encrypted_data = asym_data_crypt.bytes_encrypt(pub_key, data_in)
+        #     encrypted_file.write(encrypted_data)
+        #     decrypted_data = asym_data_crypt.bytes_decrypt(prv_key, encrypted_data)
+        #     decrypted_file.write(decrypted_data)
+        
+        
+        # # encrypt/decrypt base64
+        # with open(data/original_name, 'rb') as file:
+        #     b64_in = b64encode(file.read()).decode('utf-8')
+        # with open(output/encrypted_name, 'w') as encrypted_file, open(output/original_name, 'w') as decrypted_file:
+        #     encrypted_data = asym_data_crypt.base64_encrypt(pub_key, b64_in)
+        #     encrypted_file.write(encrypted_data)
+        #     decrypted_data = asym_data_crypt.base64_decrypt(prv_key, encrypted_data)
+        #     decrypted_file.write(decrypted_data)
+        
+        
+        # # encrypt file by path
+        # with open(output/encrypted_name, 'wb') as fio_out:
+        #     for chunk in asym_data_crypt.path_encrypt(pub_key, data/original_name, chunk_size):
+        #         fio_out.write(chunk)
+        # # decrypt file by path
+        # with open(output/original_name, 'wb') as fio_out:
+        #     for chunk in asym_data_crypt.path_decrypt(prv_key, output/encrypted_name, chunk_size):
+        #         fio_out.write(chunk)
     
-    
-    # encrypt file in chunks
-    with open(data/original_name, 'rb') as fio_in, open(output/encrypted_name, 'wb') as fio_out:
-        for chunk in asym_data_crypt.bio_encrypt(pub_key, fio_in, chunk_size):
-            fio_out.write(chunk)
-    # decrypt file in chunks
-    with open(output/encrypted_name, 'rb') as fio_in, open(output/original_name, 'wb') as fio_out:
-        for chunk in asym_data_crypt.bio_decrypt(prv_key, fio_in, chunk_size):
-            fio_out.write(chunk)
-    
-    
-    # # encrypt/decrypt bytes
-    # with open(data/original_name, 'rb') as f:
-    #     data_in = f.read()
-    # with open(output/encrypted_name, 'wb') as encrypted_file, open(output/original_name, 'wb') as decrypted_file:
-    #     encrypted_data = asym_data_crypt.bytes_encrypt(pub_key, data_in)
-    #     encrypted_file.write(encrypted_data)
-    #     decrypted_data = asym_data_crypt.bytes_decrypt(prv_key, encrypted_data)
-    #     decrypted_file.write(decrypted_data)
-    
-    
-    # # encrypt/decrypt base64
-    # with open(data/original_name, 'rb') as file:
-    #     b64_in = b64encode(file.read()).decode('utf-8')
-    # with open(output/encrypted_name, 'w') as encrypted_file, open(output/original_name, 'w') as decrypted_file:
-    #     encrypted_data = asym_data_crypt.base64_encrypt(pub_key, b64_in)
-    #     encrypted_file.write(encrypted_data)
-    #     decrypted_data = asym_data_crypt.base64_decrypt(prv_key, encrypted_data)
-    #     decrypted_file.write(decrypted_data)
-    
-    
-    # # encrypt file by path
-    # with open(output/encrypted_name, 'wb') as fio_out:
-    #     for chunk in asym_data_crypt.path_encrypt(pub_key, data/original_name, chunk_size):
-    #         fio_out.write(chunk)
-    # # decrypt file by path
-    # with open(output/original_name, 'wb') as fio_out:
-    #     for chunk in asym_data_crypt.path_decrypt(prv_key, output/encrypted_name, chunk_size):
-    #         fio_out.write(chunk)
+    except Exception as err:
+        print('Exception:', err)
